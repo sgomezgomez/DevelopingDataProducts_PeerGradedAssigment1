@@ -1,0 +1,47 @@
+---
+title: "Custom Leaflet Map Webpage - Developing Data Products - Assignment 1"
+author: "Sebastian Gomez Gomez"
+date: "6/7/2021"
+output: 
+        html_document:
+                keep_md: yes
+---
+
+```{r setup, include=FALSE}
+require(leaflet)
+require(foreign)
+require(dplyr)
+require(tidyr)
+```
+
+## Summary
+
+This web page describes the leaflet map generated from the Carpooling Slugging Locations dataset, a list of 40 slugging locations (pick-up and drop-off points) for casual carpooling in the District of Columbia. The data was originally obtained from http://sluglines.com/.
+
+
+
+## Data loading and preprocessing
+
+The dataset was downloaded from the following URL:
+
+https://query.data.world/s/icapdknm7ox4x72odwzecrjqre3plz
+
+Below is the code to load a process data:
+
+```{r}
+carpooling = read.dbf('Carpooling_Slugging_Locations.dbf', as.is = FALSE)
+carpooling = mutate(carpooling, pop = paste("<a href = '", carpooling$SOURCE, "'>", 
+                                            carpooling$STOPDESCRI, "</a>"))
+carpoolingstop = carpooling[, c('LATITUDE', 'LONGITUDE')]
+names(carpoolingstop) = c('lat', 'lng')
+carpoolingpop = carpooling$pop
+```
+
+## Leaflet Map
+
+The plot below maps all 40 slugginc pick-up and drop-off carpooling locations with dynamic clustering capabilities using the markerClusterOptions parameter as well as a popup with each stop description and web source for future reference:
+
+```{r out.height = 800, out.width = '100%'}
+carpoolingstop %>% leaflet() %>% addTiles() %>% 
+        addMarkers(popup = carpoolingpop, clusterOptions = markerClusterOptions())
+```
