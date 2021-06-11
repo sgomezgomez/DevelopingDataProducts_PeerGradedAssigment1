@@ -1,0 +1,38 @@
+---
+title: "Week 3 - Plotly presentation assignment"
+author: "Sebastian Gomez"
+date: "6/10/2021"
+output: 
+        ioslides_presentation:
+                keep_md: yes
+---
+
+```{r setup, include=FALSE}
+library(plotly)
+library(reshape2)
+```
+
+## Summary
+
+This presentation showcases a scatterplot using plotly of aggregate savings (sr) vs. real per-capita
+disposable income (dpi) per country between 1960 and 1970.
+
+Source: The data were obtained from the LifeCycleSavings dataset from Belsley, Kuh and Welsch (1980). They in turn obtained the data from Sterling (1977).
+
+## Data pre-processing and description
+
+```{r}
+LifeCycleSavings$country = row.names(LifeCycleSavings)
+```
+
+The code above creates a column with all the country names per row in the dataset.
+
+On the other hand, for formatting purposes, the diagram included in the next slide does not include a legend. Instead, by hovering over each data point you will be able to see the actual values and country they belong to.
+
+## Plotly
+
+```{r warning = FALSE, fig.height = 4.5}
+plot_ly(LifeCycleSavings, x = ~dpi, y = ~sr, type = 'scatter', 
+        mode = 'markers', color = ~as.factor(country), showlegend = FALSE)
+```
+
